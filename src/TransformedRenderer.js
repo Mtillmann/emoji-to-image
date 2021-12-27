@@ -1,11 +1,12 @@
 import {BaseRenderer} from "./BaseRenderer";
+
 export class TransformedRenderer extends BaseRenderer {
     constructor(options = {}) {
         super({
             ...{
-                scale : 1,
-                rotate : null,
-                crop : true
+                scale: 1,
+                rotate: null,
+                crop: true
             }, ...options
         });
     }
@@ -85,7 +86,7 @@ export class TransformedRenderer extends BaseRenderer {
             destinationCanvas = this.cropCanvas(destinationCanvas, input.targetWidth, input.alphaThreshold)
         }
 
-        if(this.constructor.name === 'TransformedRenderer'){
+        if (this.constructor.name === 'TransformedRenderer') {
             destinationCanvas = this.fillBackground(destinationCanvas, input.bgcolor);
         }
 
@@ -93,7 +94,7 @@ export class TransformedRenderer extends BaseRenderer {
         return this.canvasCache[cacheKey];
     }
 
-    cropCanvas(sourceCanvas, targetWidth, alphaThreshold){
+    cropCanvas(sourceCanvas, targetWidth, alphaThreshold) {
 
         const sourceContext = sourceCanvas.getContext('2d'),
             measurement = this.measureCanvasContextContent(sourceContext, targetWidth, alphaThreshold),

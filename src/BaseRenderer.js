@@ -227,19 +227,19 @@ export class BaseRenderer {
         for (const [key, value] of orderedMap) {
             let str = /*key + */ String(value);
             [
-                ['true','t'],
-                ['false','f'],
+                ['true', 't'],
+                ['false', 'f'],
                 ['null', 'n'],
                 ['sans-serif', 'ss'],
-                ['inside','is'],
-                ['outside','os']
+                ['inside', 'is'],
+                ['outside', 'os']
             ].forEach(pair => str = str.replace(pair[0], pair[1]));
 
             for (let i = 0; i < str.length; i++) {
                 const char = str.charCodeAt(i);
-                if((char >= 48 && char <= 57) || (char >= 65 && char <= 90) || (char >= 61 && char <= 122)){
+                if ((char >= 48 && char <= 57) || (char >= 65 && char <= 90) || (char >= 61 && char <= 122)) {
                     identifier += str[i];
-                }else{
+                } else {
                     identifier += str.charCodeAt(i).toString(16)
                 }
             }

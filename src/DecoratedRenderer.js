@@ -46,7 +46,7 @@ export class DecoratedRenderer extends TransformedRenderer {
                 targetWidth = currentWidth,
                 targetHeight = currentHeight;
 
-            if(input.outline > 0 && input.outlineMode === 'inside'){
+            if (input.outline > 0 && input.outlineMode === 'inside') {
                 scaledWidth -= input.outline * 2;
                 scaledHeight -= input.outline * 2;
                 targetHeight -= outlineWidth * 2;
