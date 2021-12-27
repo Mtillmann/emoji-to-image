@@ -1,0 +1,28 @@
+{
+  "name": "emoji-to-image",
+  "version": "0.0.1",
+  "description": "creates images from emojis",
+  "scripts": {
+    "build": "rollup -c --environment BUILD:build && npm run mterser",
+    "dev": "rollup -c -w --environment BUILD:dev",
+    "mterser": "node scripts/mterser.js --glob dist/umd/*.js --outdir dist/umd/ --compress --mangle --comments false",
+    "terser": "terser"
+  },
+  "keywords": [
+    "emoji",
+    "canvas",
+    "bitmap",
+    "blob",
+    "background-image"
+  ],
+  "author": "Martin Tillmann <mtillmann@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "glob": "^7.2.0",
+    "rollup": "^2.61.1",
+    "terser": "^5.10.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
