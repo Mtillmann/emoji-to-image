@@ -1,6 +1,6 @@
 # Emoji Renderer
 
-Generate Bitmaps from built-in emojis.
+Generate Bitmaps from built-in emojis: [Demos and Playground](https://mtillmann.github.io/emoji-to-image)
 
 ## Installation
 
