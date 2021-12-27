@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Emoji Renderer Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/themes/prism.css" integrity="sha256-h/qtq9bUnXbOOwP4EcbLtYM9Mk3iQQcHZAZ+Jz5y0WQ=" crossorigin="anonymous">
+    <style>
+        .markup {
+            min-height: 300px;
+            height: 100%;
+            position: relative;
+        }
+
+        .markup.waiting:after {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            background-color: lightgray;
+            content: "waiting to render...";
+            border-radius: 25%;
+            padding: 0.1rem 0.25rem;
+            font-size: 0.75rem;
+        }
+
+        .bgs-contain {
+            background-size: contain;
+        }
+
+        .bgs-cover {
+            background-size: cover;
+        }
+
+        .markup::before {
+            content: attr(data-timing);
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: lightgray;
+            font-size: 0.75rem;
+        }
+
+        [data-emoji] {
+            position: absolute;
+            /*transform: translate(-50%, -50%);*/
+            top: 50%;
+            left: 50%;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 66%;
+            height: 66%;
+        }
+    </style>
+    <script>
+        let helperDemos = [];
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="demo" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="renderer-tab" data-bs-toggle="tab" data-bs-target="#renderer"
+                            type="button" role="tab" aria-controls="renderer" aria-selected="true">Renderer Demo
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="csshelper-tab" data-bs-toggle="tab" data-bs-target="#csshelper"
+                            type="button" role="tab" aria-controls="csshelper" aria-selected="false">CSSHelper Demos
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content" id="demoContent">
+                <div class="tab-pane fade" id="renderer" role="tabpanel" aria-labelledby="renderer-tab">
+
+
+                    <div class="container-fluid px-0 py-2" id="app" x-data="generator"
+                         x-on:renderer:render.window="render">
+                        <div class="row g-2">
+                            <div class="col-12 col-lg-8 mb-2"
+                                 id="target">
+
+                                <div class="checkered w-100 h-100 p-3 d-flex align-items-center justify-content-center">
+
+
+                                    <img x-ref="img" :style="`width:${info.width}px;`" :src="blobURI" alt=""
+                                         class="shadow d-flex mw-100">
+                                </div>
+
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <form action="">
+                                    <div class="row g-1">
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <input x-model.debounce="options.emoji" type="text" maxlength="4"
+                                                       class="form-control" id="emoji"
+                                                       placeholder="emoji" @focus="options.emoji = ''">
+                                                <label for="emoji">emoji</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <input x-model.debounce="options.targetWidth" type="number" min="10"
+                                                       max="3820" class="form-control"
+                                                       id="width"
+                                                       placeholder="width">
+                                                <label for="width">width</label>
+                                            </div>
+                                        </div>
+                                        <!-- pointless outside of loader
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <input x-model.debounce.number="options.scale" type="number" min="0.01" max="10" step="0.01"
+                                                       class="form-control"
+                                                       id="scale"
+                                                       placeholder="scale">
+                                                <label for="scale">
+                                                    <span x-text="options.scale !== 1 ? '☑' : '🟦'"></span>
+                                                    scale</label>
+                                            </div>
+                                        </div>
+                                        -->
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <input x-model.debounce.number="options.rotate" type="number" min="0"
+                                                       max="359" class="form-control"
+                                                       id="rotate"
+                                                       placeholder="rotate">
+                                                <label for="rotate">
+                                                    <span x-text="options.rotate > 0 ? '☑' : '🟦'"></span>
+                                                    rotate</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <input :disabled="options.pixelate === 0"
+                                                       x-model.debounce.number="options.outline" type="number"
+                                                       min="0" max="5" class="form-control"
+                                                       id="outline"
+                                                       placeholder="outline">
+                                                <label for="outline">
+                                                    <span x-text="options.outline > 0 ? '☑' : '🟦'"></span>
+                                                    outline</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <input :disabled="options.pixelate === 0"
+                                                       x-model.debounce="options.outlineColor" type="color"
+                                                       class="form-control" id="outlinecolor"
+                                                       placeholder="outlinecolor">
+                                                <label for="outlinecolor">outline color</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+
+                                                <select :disabled="options.pixelate === 0"
+                                                        x-model.debounce="options.outlineMode" class="form-select"
+                                                        id="outlineMode">
+                                                    <option value="inside">inside</option>
+                                                    <option value="outside">outside</option>
+                                                </select>
+
+                                                <label for="outlineMode">outl. mode</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <input x-model.debounce.number="options.pixelate" type="number" min="0"
+                                                       max="100"
+                                                       class="form-control"
+                                                       id="pixelate"
+                                                       placeholder="pixelate">
+                                                <label for="pixelate">
+                                                    <span x-text="options.pixelate > 0 ? '☑' : '🟦'"></span>
+                                                    pixelate
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <select x-model.debounce="options.bgmode" class="form-select"
+                                                        id="bgmode">
+                                                    <option value="transparent">transparent</option>
+                                                    <option value="solid">solid</option>
+                                                </select>
+                                                <label for="bgmode">bg mode</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <input :disabled="options.bgmode === 'transparent'"
+                                                       x-model.debounce="options.bgcolor"
+                                                       type="color" class="form-control" id="bgcolor"
+                                                       placeholder="bgcolor">
+                                                <label for="bgcolor">bg color</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <select x-model.debounce="options.type" class="form-select" id="type">
+                                                    <option value="png">png</option>
+                                                    <option value="jpeg">jpeg</option>
+                                                    <option value="webp">webp</option>
+                                                </select>
+                                                <label for="type">file type</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <input :disabled="options.type === 'png'"
+                                                       x-model.debounce.number="options.quality" type="number"
+                                                       step="0.01" min="0.1" max="1" class="form-control"
+                                                       id="quality"
+                                                       placeholder="quality">
+                                                <label for="quality">quality</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-4">
+                                            <div class="form-floating mb-1">
+                                                <select x-model.debounce.number="options.crop" class="form-select"
+                                                        id="crop">
+                                                    <option value="1">on</option>
+                                                    <option value="0">off</option>
+                                                </select>
+                                                <label for="crop">
+                                                    <span x-text="options.crop ? '☑' : '🟦'"></span>
+                                                    crop</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item"
+                                                    x-text="`Filesize: ${info.fileSizeHR} (${info.fileSize} bytes)`"></li>
+                                                <li class="list-group-item"
+                                                    x-text="`Dimensions: ${info.width}x${info.height}px ${info.scale}`">
+                                                    A second
+                                                    item
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <a :href="blobURI" x-ref="link"
+                                                       :download="`emoji_${options.emoji}_${options.targetWidth}px.${options.type.replace('pe','p')}`">Download
+                                                        Image</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+
+                                </form>
+                            </div>
+                            <div class="col-12">
+                                <hr>
+                                <h2 class="display-6">Info</h2>
+                                <p>The emoji image is rendered on your machine, so only emojis that are available on
+                                    your operating system can be rendered.</p>
+                                <p>The URL is updated every time you make a change, so you can share or save the URL and
+                                    it will show the same view that you are currently seeing.</p>
+                                <h2 class="display-6">Options explained</h2>
+                                <p><strong>Emoji</strong>: the emoji character to render. Since emojis consist of up to
+                                    4 characters and some operating systems and browser have difficulties with correctly
+                                    reading emoji length, the input takes up to four characters.</p>
+                                <p><strong>Width</strong>: the target width of the emoji image. The result may differ
+                                    due to scaling and cropping inconsistencies.</p>
+                                <p><strong>Rotate</strong>: amount of degrees to rotate the emoji.</p>
+                                <p><strong>Outline</strong>: draw an outline around the emoji. Since it currently uses a
+                                    very simple method, it only really works with pixelated emojis, where 1 unit of
+                                    outline equals the size of one pixel.</p>
+                                <p><strong>Outline Color</strong>: the color of the outline, if applicable.</p>
+                                <p><strong>Outline Mode</strong>: draws the outline inside or outside of the original bounds.</p>
+                                <p><strong>Pixelate</strong>: apply a pixelation effect to the emoji. The number
+                                    determines the internal resolution, i.e. how many pixels get drawn for every given
+                                    input pixel.</p>
+                                <p><strong>Background Mode</strong>: whether to fill the background with a solid color
+                                    or keep it transparent. JPEG output supports solid background colors.</p>
+                                <p><strong>Background Color</strong>: the background color, if applicable.</p>
+                                <p><strong>File type</strong>: file type of the image. JPEG does not support transparent
+                                    background, WEBP might not be available on every platform, PNG does not support the
+                                    quality setting.</p>
+                                <p><strong>Quality</strong>: quality of the output image, 1 is highest, 0 is lowest.</p>
+                                <p><strong>Crop</strong>: when enabled, rows and columns of empty pixels are shaved off
+                                    the edges of the output image.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="csshelper" role="tabpanel" aria-labelledby="csshelper-tab">
+
+
+                    <div class="container-fluid p-0">
+                        <div class="row helper-demo mt-4" id="helper-demo-basic">
+                            <div class="col-12">
+                                <h2 class="display-6">
+                                    Basic example
+                                </h2>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-basic-tabs" role="tablist">
+                                </ul>
+                                <div class="tab-content" id="helper-demo-basic-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-basic-description"
+                                         role="tabpanel" aria-labelledby="helper-demo-basic-description-tab">
+                                        <p>
+                                            A single emoji is rendered using the BaseRenderer Class.
+                                            Properties like dimensions, background image position etc
+                                            are set discretely
+                                        </p>
+
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        helperDemos.push(() => {//remove
+                                            const renderer = new EMOJI.BaseRenderer({targetWidth: 300});
+                                            new EMOJI.CSSHelper({
+                                                targetNode: document.querySelector('#helper-demo-basic .markup')
+                                            }, renderer);
+                                        });//remove
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-12 col-lg-6 markup checkered waiting">
+                                <div data-emoji="🍌" class="translate-middle bgs-contain"></div>
+                            </div>
+                        </div> <!-- end #helper-demo-basic -->
+                        <div class="row helper-demo mt-4" id="helper-demo-transformed">
+                            <div class="col-12">
+                                <h2 class="display-6">
+                                    Transformation &amp; Crop
+                                </h2>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-transformed-tabs" role="tablist">
+                                </ul>
+                                <div class="tab-content" id="helper-demo-transformed-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-transformed-description"
+                                         role="tabpanel" aria-labelledby="helper-demo-transformed-description-tab">
+                                        <p>
+                                            Two rotated emojis are rendered using the json attribute. The right emoji
+                                            is smaller because `crop` is disabled for the second element.
+                                            Also note how in the output markup both divs have received a new
+                                            data-attribute.
+                                        </p>
+                                        <p>The general styling is done via bootstrap classes</p>
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        helperDemos.push(() => {//remove
+                                            const renderer = new EMOJI.TransformedRenderer({targetWidth: 300});
+                                            new EMOJI.CSSHelper({
+                                                targetNode: document.querySelector('#helper-demo-transformed .markup')
+                                            }, renderer);
+                                        });//remove
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-12 col-lg-6 markup checkered waiting">
+                                <div data-emoji='{"emoji" : "📵", "rotate" : "45deg"}'
+                                     class="border border-secondary w-50 h-50 start-0 top-50 translate-middle-y bgs-contain"></div>
+                                <div data-emoji='{"emoji" : "📵", "rotate" : "45deg", "crop" : false}'
+                                     class="border border-secondary w-50 h-50 end-0 top-50 translate-middle-y bgs-contain"></div>
+                            </div>
+                        </div> <!-- end #helper-demo-transformed -->
+                        <div class="row helper-demo mt-4" id="helper-demo-decorated">
+                            <div class="col-12">
+                                <h2 class="display-6">
+                                    Pixelation
+                                </h2>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-decorated-tabs" role="tablist">
+                                </ul>
+                                <div class="tab-content" id="helper-demo-decorated-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-decorated-description"
+                                         role="tabpanel" aria-labelledby="helper-demo-decorated-description-tab">
+                                        <p>
+                                            Each emoji is rendered with an increasing amount of pixelation,
+                                            while the rotation of all emojis is set on the renderer instance.
+                                        </p>
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        helperDemos.push(() => {//remove
+                                            const renderer = new EMOJI.DecoratedRenderer({
+                                                targetWidth: 150,
+                                                rotate: '45deg'
+                                            });
+                                            new EMOJI.CSSHelper({
+                                                targetNode: document.querySelector('#helper-demo-decorated .markup')
+                                            }, renderer);
+                                        });//remove
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-12 col-lg-6 markup checkered waiting">
+                                <div data-emoji='{"emoji" : "✌️", "pixelate" : 4}'
+                                     class="w-50 h-50 start-0 top-0 translate-top-y bgs-contain"></div>
+                                <div data-emoji='{"emoji" : "✌️", "pixelate" : 8}'
+                                     class="w-50 h-50 end-0 top-0 translate-top-y bgs-contain"></div>
+                                <div data-emoji='{"emoji" : "✌️", "pixelate" : 16}'
+                                     class="w-50 h-50 start-0 bottom-0 translate-top-y bgs-contain"></div>
+                                <div data-emoji='{"emoji" : "✌️", "pixelate" : 32}'
+                                     class="w-50 h-50 end-0 bottom-0 translate-top-y bgs-contain"></div>
+                            </div>
+                        </div> <!-- end #helper-demo-decorated -->
+                        <div class="row helper-demo mt-4" id="helper-demo-outline">
+                            <div class="col-12">
+                                <h2 class="display-6">
+                                    Outlines
+                                </h2>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-outline-tabs" role="tablist"></ul>
+                                <div class="tab-content" id="helper-demo-outline-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-outline-description"
+                                         role="tabpanel" aria-labelledby="helper-demo-outline-description-tab">
+                                        <p>
+                                            Outlines only work for pixelated emojis. The left image uses the
+                                            default "outlineMode"-option "inside" to render the outline inside its
+                                            original
+                                            bounds while the right emoji uses "outside" and has larger dimensions.
+                                        </p>
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        helperDemos.push(() => {//remove
+                                            const renderer = new EMOJI.DecoratedRenderer({
+                                                targetWidth: 150,
+                                                outlineColor: 'hotpink',
+                                                outline: 2,
+                                                pixelate: 5
+                                            });
+                                            new EMOJI.CSSHelper({
+                                                targetNode: document.querySelector('#helper-demo-outline .markup')
+                                            }, renderer);
+                                        });//remove
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-12 col-lg-6 markup checkered waiting">
+                                <div data-emoji='{"emoji" : "📐️"}'
+                                     class="w-50 h-100 start-0 top-0 translate-top-y"></div>
+                                <div data-emoji='{"emoji" : "📐️", "outlineMode" : "outside"}'
+                                     class="w-50 h-100 end-0 top-0 translate-top-y"></div>
+                            </div>
+                        </div> <!-- end #helper-demo-outline -->
+                        <div class="row helper-demo mt-4" id="helper-demo-dims">
+                            <div class="col-12">
+                                <h2 class="display-6">
+                                    Using Output Dimensions
+                                </h2>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-dims-tabs" role="tablist"></ul>
+                                <div class="tab-content" id="helper-demo-dims-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-dims-description"
+                                         role="tabpanel" aria-labelledby="helper-demo-dims-description-tab">
+                                        <p>
+                                            Platform-specific emoji-implementations may have different aspect ratios
+                                            for the same emoji. If you don't want to guess you can have the exact output
+                                            dimensions set in the output CSS rule by using the "setDimensions"-option.
+                                            This can be particularly useful in conjunction with the renderer's scale and
+                                            pixelate
+                                            options for compositions.
+                                        </p>
+                                        <p>The border and shadow only illustrate the div's dimensions.</p>
+                                        <p>The "setDimensions" option comes at a slight performance hit, as the (cached)
+                                            blob
+                                            image has to be loaded once in code to acquire its dimensions.</p>
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        helperDemos.push(() => {//remove
+                                            const renderer = new EMOJI.DecoratedRenderer({
+                                                targetWidth: 150
+                                            });
+                                            new EMOJI.CSSHelper({
+                                                targetNode: document.querySelector('#helper-demo-dims .markup'),
+                                                setDimensions: true
+                                            }, renderer);
+                                        });//remove
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-12 col-lg-6 markup checkered waiting">
+                                <div data-emoji="🎯"
+                                     class="start-50 top-50 translate-middle border border-secondary shadow-lg"></div>
+
+                            </div>
+                        </div> <!-- end #helper-demo-dims -->
+                        <div class="row helper-demo mt-4" id="helper-demo-dataapi">
+                            <div class="col-12">
+                                <h2 class="display-6">
+                                    Data-Attr API
+                                </h2>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-dataapi-tabs" role="tablist"></ul>
+                                <div class="tab-content" id="helper-demo-dataapi-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-dataapi-description"
+                                         role="tabpanel" aria-labelledby="helper-demo-dataapi-description-tab">
+                                        <p>
+                                            In addition to using a complex json data-emoji-attribute, you can pass
+                                            all renderer options via data-attributes. The attribute names correspond to
+                                            the renderer options but must be passed in kebab case.
+                                        </p>
+                                        <p>
+                                            Both variants generate the same selector, although they're initialized
+                                            through different APIs.
+                                        </p>
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        helperDemos.push(() => {//remove
+                                            const renderer = new EMOJI.DecoratedRenderer({
+                                                targetWidth: 250
+                                            });
+                                            new EMOJI.CSSHelper({
+                                                targetNode: document.querySelector('#helper-demo-dataapi .markup')
+                                            }, renderer);
+                                        });//remove
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-12 col-lg-6 markup checkered waiting">
+                                <div data-emoji='{"emoji": "🤼", "pixelate" : 4, "outline" : 2}'
+                                     class="start-0 top-0 w-50 h-100 bgs-contain"></div>
+                                <div data-emoji="🤼" data-emoji-pixelate="4" data-emoji-outline="2"
+                                     class="end-0 top-0 w-50 h-100 bgs-contain"></div>
+                            </div>
+                        </div> <!-- end #helper-demo-dataapi -->
+                        <div class="row helper-demo mt-4" id="helper-demo-dynamiccontent">
+                            <div class="col-12">
+                                <h2 class="display-6">
+                                    Adding Content
+                                </h2>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-dynamiccontent-tabs" role="tablist"></ul>
+                                <div class="tab-content" id="helper-demo-dynamiccontent-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-dynamiccontent-description"
+                                         role="tabpanel" aria-labelledby="helper-demo-dynamiccontent-description-tab">
+                                        <p>
+                                            A CSSHelper-instance's deploy method can be called again when you have added
+                                            content to your document that needs to be processed:
+                                        </p>
+                                        <p>
+                                            <a href="#">Add some divs</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        helperDemos.push(() => {//remove
+                                            const renderer = new EMOJI.DecoratedRenderer({
+                                                    targetWidth: 150
+                                                }),
+                                                helper = new EMOJI.CSSHelper({
+                                                    targetNode: document.querySelector('#helper-demo-dynamiccontent .markup'),
+                                                    setDimensions: true
+                                                }, renderer),
+                                                addDivs = () => {
+                                                    const amount = Math.ceil(Math.random() * 6);
+                                                    for (let i = 0; i < amount; i++) {
+                                                        const emojiObject = {
+                                                            emoji: "🐖",
+                                                            scale: 0.2 + Math.random() * .5,
+                                                            rotate: 6.28319 * Math.random()
+                                                        };
+                                                        document.querySelector('#helper-demo-dynamiccontent .markup')
+                                                            .insertAdjacentHTML('beforeend', `<div data-emoji='${JSON.stringify(emojiObject)}' style="left:${(0.1 + Math.random() * .8) * 100}%; top:${(0.1 + Math.random() * .8) * 100}%" class="position-absolute translate-middle"></div>\n`);
+                                                    }
+                                                    helper.deploy();
+                                                }
+                                            document.querySelector('#helper-demo-dynamiccontent-description a').addEventListener('click', e => {
+                                                e.preventDefault();
+                                                addDivs();
+                                            });
+                                        });//remove
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-12 col-lg-6 markup checkered waiting">
+                                <div data-emoji="🐖" class="translate-middle start-50 top-50"></div>
+                            </div>
+                        </div> <!-- end #helper-demo-dynamiccontent -->
+                        <div class="row helper-demo mt-4" id="helper-demo-nocache">
+                            <div class="col-12">
+                                <h2 class="display-6">
+                                    Disabling Cache
+                                </h2>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-nocache-tabs" role="tablist"></ul>
+                                <div class="tab-content" id="helper-demo-nocache-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-nocache-description"
+                                         role="tabpanel" aria-labelledby="helper-demo-nocache-description-tab">
+                                        <p>
+                                            Compare the timing in the lower right corner to the
+                                        timing of the "Pixelation" example above. Caching really improves the performance.</p>
+                                        <p>If you see no significant difference, please reload the page. Caching of course only kicks
+                                        after the second page load.</p>
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        helperDemos.push(() => {//remove
+                                            const renderer = new EMOJI.DecoratedRenderer({
+                                                targetWidth: 150,
+                                                rotate: '45deg'
+                                            });
+                                            new EMOJI.CSSHelper({
+                                                targetNode: document.querySelector('#helper-demo-nocache .markup'),
+                                                useCache: false
+                                            }, renderer);
+                                        });//remove
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-12 col-lg-6 markup checkered waiting">
+                                <div data-emoji='{"emoji" : "✌️", "pixelate" : 4}'
+                                     class="w-50 h-50 start-0 top-0 translate-top-y bgs-contain"></div>
+                                <div data-emoji='{"emoji" : "✌️", "pixelate" : 8}'
+                                     class="w-50 h-50 end-0 top-0 translate-top-y bgs-contain"></div>
+                                <div data-emoji='{"emoji" : "✌️", "pixelate" : 16}'
+                                     class="w-50 h-50 start-0 bottom-0 translate-top-y bgs-contain"></div>
+                                <div data-emoji='{"emoji" : "✌️", "pixelate" : 32}'
+                                     class="w-50 h-50 end-0 bottom-0 translate-top-y bgs-contain"></div>
+                            </div>
+                        </div> <!-- end #helper-demo-nocache -->
+                        <div class="row helper-demo mt-4" id="helper-demo-errors">
+                            <div class="col-12">
+                                <h2 class="display-6">
+                                    Errors
+                                </h2>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-errors-tabs" role="tablist"></ul>
+                                <div class="tab-content" id="helper-demo-errors-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-errors-description"
+                                         role="tabpanel" aria-labelledby="helper-demo-errors-description-tab">
+                                        <p>
+                                            Malformed JSON will result in a unicode replacement character being generated
+                                            and the original content of the data-emoji attribute is replace with PARSE_ERROR.
+                                            The original, defect JSON is placed in the data-original-emoji attribute.
+                                            </p>
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        helperDemos.push(() => {//remove
+                                            const renderer = new EMOJI.DecoratedRenderer({
+                                                targetWidth: 250
+                                            });
+                                            new EMOJI.CSSHelper({
+                                                targetNode: document.querySelector('#helper-demo-errors .markup')
+                                            }, renderer);
+                                        });//remove
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-12 col-lg-6 markup checkered waiting">
+                                <div data-emoji='{malformed json "emoji" : "✌️", "pixelate" : 4}'
+                                     class="w-100 h-100 start-5 top-5 translate-middle bgs-contain"></div>
+                            </div>
+                        </div> <!-- end #helper-demo-errors -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    window.currentTab = (new URL(window.location)).searchParams.get('tab') || 'renderer';
+
+
+    function rebuildJSONAttr(string) {
+        return string.replace(/"\{/g, '\'{').replace(/\}"/g, '}\'').replace(/&quot;/g, '"');
+    }
+
+    function untab(string) {
+        let lines = string.split(/\r?\n/).filter(l => l.trim().length > 0),
+            firstlineWhitespace = lines.length > 0 ? lines[0].match(/^\s+/) : [''],
+            re = new RegExp(`^${firstlineWhitespace[0]}(    )?`);
+
+        lines = lines.filter(l => !/remove$/.test(l));
+
+        lines = lines.map(line => line.replace(re, '')).filter(l => l.trim().length > 0);
+        return lines.join("\n");
+    }
+
+    window.addEventListener('load', () => {
+        //render all demos in sequence to avoid them shitting up each others timings
+        setTimeout(helperDemos.shift(), 500)
+
+        document.addEventListener('emoji:deployed', e => {
+            const nextWaiting = document.querySelector('.markup.waiting');
+            if (nextWaiting) {
+                nextWaiting.classList.remove('waiting');
+            }
+            const next = helperDemos.shift();
+            if (next) {
+                next();
+            }
+
+            const parentNode = e.detail.instance.options.targetNode.parentNode,
+                cssSourceNode = parentNode.querySelector('.language-css');
+
+            cssSourceNode.textContent = '';
+
+            for (let i = 0; i < e.detail.instance.styleNode.sheet.cssRules.length; i++) {
+                let rule = e.detail.instance.styleNode.sheet.cssRules[i].cssText;
+                rule = rule.replace(/\{\s+(\w)/, '{\n    $1')
+                    .replace(/;\s+(\w)/g, ';\n    $1')
+                    .replace(/\}/, '\n}');
+                cssSourceNode.textContent += rule + "\n";
+            }
+
+            Prism.highlightElement(parentNode.querySelector('.language-css'));
+
+            parentNode.querySelector('.markup').dataset.timing = `${e.detail.timings.slice(-1) - e.detail.timings.slice(-2, -1)}ms`;
+
+            parentNode.querySelector('.rendered.language-markup').textContent = rebuildJSONAttr(untab(parentNode.querySelector('.markup').innerHTML));
+            Prism.highlightElement(parentNode.querySelector('.rendered.language-markup'));
+
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const c = document.createElement('canvas'),
+            ctx = c.getContext('2d'),
+            dim = 5,
+            color = 'rgb(190,190,190)';
+
+        c.setAttribute('width', dim * 2);
+        c.setAttribute('height', dim * 2);
+
+        ctx.beginPath();
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, dim * 2, dim * 2);
+        ctx.fillStyle = color
+        ctx.fillRect(0, 0, dim, dim);
+        ctx.fillRect(dim, dim, dim, dim);
+        ctx.fill();
+        ctx.closePath();
+
+        document.querySelector('style').sheet.insertRule(`.checkered{background-image:url(${c.toDataURL()});}`);
+
+        document.querySelectorAll('.helper-demo').forEach(node => {
+
+            const demoName = node.getAttribute('id').match(/\w+$/)[0];
+
+            node.querySelector('.nav-pills').insertAdjacentHTML('beforeend', `
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="helper-demo-${demoName}-description-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#helper-demo-${demoName}-description"
+                            type="button" role="tab"
+                            aria-controls="helper-demo-${demoName}-description"
+                            aria-selected="true">Description
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="helper-demo-${demoName}-js-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#helper-demo-${demoName}-js" type="button" role="tab"
+                            aria-controls="helper-demo-${demoName}-js" aria-selected="false">
+                        JS
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="helper-demo-${demoName}-markup-tab"
+                            data-bs-toggle="pill" data-bs-target="#helper-demo-${demoName}-markup"
+                            type="button" role="tab" aria-controls="helper-demo-${demoName}-markup"
+                            aria-selected="false">Markup
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="helper-demo-${demoName}-css-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#helper-demo-${demoName}-css" type="button" role="tab"
+                            aria-controls="helper-demo-${demoName}-css" aria-selected="false">
+                        CSS
+                    </button>
+                </li>
+            `);
+
+            node.querySelector('.tab-content').insertAdjacentHTML('beforeend', `
+                <div class="tab-pane fade" id="helper-demo-${demoName}-js" role="tabpanel"
+                     aria-labelledby="helper-demo-${demoName}-js-tab">
+                    <pre><code class="language-javascript"></code></pre>
+                </div>
+                <div class="tab-pane fade" id="helper-demo-${demoName}-markup" role="tabpanel"
+                     aria-labelledby="helper-demo-${demoName}-markup-tab">
+                    Original:<br>
+                    <pre><code class="original language-markup"></code></pre>
+                    After deploy:
+                    <pre><code class="rendered language-markup"></code></pre>
+                </div>
+                <div class="tab-pane fade" id="helper-demo-${demoName}-css" role="tabpanel"
+                     aria-labelledby="helper-demo-${demoName}-css-tab">
+                    <pre><code class="language-css"></code></pre>
+                </div>
+            `);
+
+
+            node.querySelector('.language-javascript').textContent = untab(node.querySelector('script').textContent);
+            Prism.highlightElement(node.querySelector('.language-javascript'));
+
+            node.querySelector('.original.language-markup').textContent = rebuildJSONAttr(untab(node.querySelector('.markup').innerHTML));
+            Prism.highlightElement(node.querySelector('.original.language-markup'));
+            node.querySelectorAll('.nav-link').forEach(function (triggerEl) {
+                const tabTrigger = new bootstrap.Tab(triggerEl)
+                triggerEl.addEventListener('click', function (event) {
+                    event.preventDefault()
+                    tabTrigger.show()
+                })
+            })
+        });
+
+        document.querySelectorAll('#demo button').forEach(function (triggerEl) {
+            const tabTrigger = new bootstrap.Tab(triggerEl)
+            triggerEl.addEventListener('click', function (event) {
+                event.preventDefault()
+                tabTrigger.show();
+                window.currentTab = event.target.getAttribute('aria-controls');
+                if (window.currentTab === 'renderer') {
+                    window.dispatchEvent(new CustomEvent('renderer:render'))
+                } else {
+                    const url = new URL(window.location);
+                    url.searchParams.set('tab', window.currentTab);
+                    window.history.replaceState({}, document.title, url.toString());
+                }
+            })
+        });
+
+
+        bootstrap.Tab.getInstance(document.querySelector(`[aria-controls=${window.currentTab}]`)).show()
+    });
+
+    let generator = {
+        options: {
+            crop: 1,
+            emoji: '🔥',
+            targetWidth: 400,
+            rotate: 0,
+            outline: 0,
+            pixelate: 0,
+            outlineColor: '#ff0000',
+            outlineMode: 'inside',
+            bgmode: 'transparent',
+            bgcolor: '#aaaaaa',
+            type: 'png',
+            quality: 1
+        },
+        optionMap: {
+            c: 'crop',
+            e: 'emoji',
+            w: 'targetWidth',
+            r: 'rotate',
+            o: 'outline',
+            p: 'pixelate',
+            oc: 'outlineColor',
+            om: 'outlineMode',
+            m: 'bgmode',
+            b: 'bgcolor',
+            t: 'type',
+            q: 'quality'
+        },
+        optionTypes: {
+            crop: 'int',
+            emoji: 'string',
+            targetWidth: 'int',
+            rotate: 'int',
+            outline: 'int',
+            pixelate: 'int',
+            outlineColor: 'string',
+            outlineMode: 'string',
+            bgmode: 'string',
+            bgcolor: 'string',
+            type: 'string',
+            quality: 'float'
+        },
+        info: {
+            fileSize: 0,
+            fileSizeHR: 0,
+            width: 0,
+            height: 0,
+            scale: ''
+        },
+        blobURI: null,
+
+        init() {
+
+            this.readOptionsFromURL()
+
+            for (const key in this.options) {
+                this.$watch(`options.${key}`, this.render.bind(this))
+            }
+
+            if (window.currentTab === 'renderer') {
+                this.render();
+            }
+            this.$refs.img.addEventListener('load', () => {
+                this.info.width = this.$refs.img.naturalWidth;
+                this.info.height = this.$refs.img.naturalHeight;
+                console.log('das hier ist noch wonky')
+                this.info.scale = '';
+                if (this.$refs.img.width < this.$refs.img.naturalWidth) {
+                    const scale = Math.round((this.$refs.img.width / this.$refs.img.naturalWidth) * 100) / 100;
+                    this.info.scale = `(rendered at ${scale * 100}%)`;
+                }
+            })
+
+        },
+        render() {
+
+            for (const key in this.options) {
+                if (this.options[key] !== this.enforceType(key, this.options[key])) {
+                    this.options[key] = this.enforceType(key, this.options[key]);
+                    return;
+                }
+            }
+
+            if (this.options.targetWidth === 0) {
+                this.options.targetWidth = 300;
+                return;
+            }
+
+            if (this.options.type === 'jpeg' && this.options.bgmode !== 'solid') {
+                this.options.bgmode = 'solid';
+                return;
+            }
+            if (this.options.type === 'png' && this.options.quality !== 1) {
+                this.options.quality = 1;
+                return;
+            }
+            if (this.options.pixelate === 0 && this.options.outline > 0) {
+                this.options.outline = 0;
+                return;
+            }
+
+            let options = {...this.options};
+
+            options.bgcolor = options.bgmode === 'solid' ? options.bgcolor : false;
+
+            options.rotate = `${options.rotate}deg`
+
+            const canvas = (new EMOJI.DecoratedRenderer()).render(options);
+            canvas.toBlob(blob => {
+                this.blobURI = URL.createObjectURL(blob);
+
+                this.writeOptionsToURL();
+
+                this.info.fileSize = blob.size;
+                this.info.fileSizeHR = this.humanFileSize(blob.size);
+            }, `image/${options.type}`, options.quality)
+
+        },
+        //https://stackoverflow.com/a/14919494/8797350
+        humanFileSize(bytes, si = false, dp = 1) {
+            const thresh = si ? 1000 : 1024;
+
+            if (Math.abs(bytes) < thresh) {
+                return bytes + ' B';
+            }
+
+            const units = si
+                ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+                : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+            let u = -1;
+            const r = 10 ** dp;
+
+            do {
+                bytes /= thresh;
+                ++u;
+            } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+
+            return bytes.toFixed(dp) + ' ' + units[u];
+        },
+        readOptionsFromURL() {
+            new URL(window.location).searchParams.forEach((v, k) => {
+                if (k in this.optionMap) {
+                    v = this.enforceType(this.optionMap[k], v);
+
+                    this.options[this.optionMap[k]] = v;
+                }
+            });
+        },
+        writeOptionsToURL() {
+            const url = new URL(window.location);
+            for (const short in this.optionMap) {
+                url.searchParams.set(short, this.options[this.optionMap[short]]);
+            }
+            url.searchParams.set('tab', window.currentTab);
+            window.history.replaceState({}, document.title, url.toString());
+        },
+        enforceType(key, value) {
+            const type = this.optionTypes[key];
+            if (type === 'int') {
+                if (!value) {
+                    value = 0;
+                }
+                value = parseInt(value, 10);
+            } else if (type === 'float') {
+                if (!value) {
+                    value = 0;
+                }
+                value = parseFloat(value);
+            }
+
+            return value;
+        }
+    };
+</script>
+
+
+<script src="dist/umd/emoji-renderer-base.js"></script>
+<script src="dist/umd/emoji-renderer-transformed.js"></script>
+<script src="dist/umd/emoji-renderer-decorated.js"></script>
+<script src="dist/umd/emoji-csshelper.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/prism.min.js" data-manual></script>
+</body>
+
+</html>
