@@ -30,8 +30,10 @@ export class BaseRenderer {
             canvasHeight = parseInt(context.canvas.getAttribute('height'), 10),
             i;
 
-        //const byteTest = v => v > 0;
-        const byteTest = (v, i) => ((i + 1) % 4 === 0) ? v > alphaThreshold : v > 0;
+        //brave fuzzes bytes to avoid fingerprinting, so it needs a special value
+        const regularByteThreshold = navigator.brave ? 1 : 0,
+            byteTest = (v, i) => ((i + 1) % 4 === 0) ? v > alphaThreshold : v > regularByteThreshold;
+        //const byteTest = v => v > regularByteThreshold;
 
         for (i = 0; i < canvasWidth * .5; i++) {
             if (bounds.left && bounds.right) {
@@ -77,6 +79,7 @@ export class BaseRenderer {
                 }
             }
         }
+
 
         let actualHeight = canvasHeight - bounds.top - bounds.bottom,
             actualWidth = canvasWidth - bounds.right - bounds.left,
