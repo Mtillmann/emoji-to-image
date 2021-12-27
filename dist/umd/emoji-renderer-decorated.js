@@ -36,8 +36,10 @@
                 canvasHeight = parseInt(context.canvas.getAttribute('height'), 10),
                 i;
 
-            //const byteTest = v => v > 0;
-            const byteTest = (v, i) => ((i + 1) % 4 === 0) ? v > alphaThreshold : v > 0;
+            //brave fuzzes bytes to avoid fingerprinting, so it needs a special value
+            const regularByteThreshold = navigator.brave ? 1 : 0,
+                byteTest = (v, i) => ((i + 1) % 4 === 0) ? v > alphaThreshold : v > regularByteThreshold;
+            //const byteTest = v => v > regularByteThreshold;
 
             for (i = 0; i < canvasWidth * .5; i++) {
                 if (bounds.left && bounds.right) {
@@ -83,6 +85,7 @@
                     }
                 }
             }
+
 
             let actualHeight = canvasHeight - bounds.top - bounds.bottom,
                 actualWidth = canvasWidth - bounds.right - bounds.left,
@@ -233,19 +236,19 @@
             for (const [key, value] of orderedMap) {
                 let str = /*key + */ String(value);
                 [
-                    ['true','t'],
-                    ['false','f'],
+                    ['true', 't'],
+                    ['false', 'f'],
                     ['null', 'n'],
                     ['sans-serif', 'ss'],
-                    ['inside','is'],
-                    ['outside','os']
+                    ['inside', 'is'],
+                    ['outside', 'os']
                 ].forEach(pair => str = str.replace(pair[0], pair[1]));
 
                 for (let i = 0; i < str.length; i++) {
                     const char = str.charCodeAt(i);
-                    if((char >= 48 && char <= 57) || (char >= 65 && char <= 90) || (char >= 61 && char <= 122)){
+                    if ((char >= 48 && char <= 57) || (char >= 65 && char <= 90) || (char >= 61 && char <= 122)) {
                         identifier += str[i];
-                    }else {
+                    } else {
                         identifier += str.charCodeAt(i).toString(16);
                     }
                 }
@@ -292,9 +295,9 @@
         constructor(options = {}) {
             super({
                 ...{
-                    scale : 1,
-                    rotate : null,
-                    crop : true
+                    scale: 1,
+                    rotate: null,
+                    crop: true
                 }, ...options
             });
         }
@@ -374,7 +377,7 @@
                 destinationCanvas = this.cropCanvas(destinationCanvas, input.targetWidth, input.alphaThreshold);
             }
 
-            if(this.constructor.name === 'TransformedRenderer'){
+            if (this.constructor.name === 'TransformedRenderer') {
                 destinationCanvas = this.fillBackground(destinationCanvas, input.bgcolor);
             }
 
@@ -382,7 +385,7 @@
             return this.canvasCache[cacheKey];
         }
 
-        cropCanvas(sourceCanvas, targetWidth, alphaThreshold){
+        cropCanvas(sourceCanvas, targetWidth, alphaThreshold) {
 
             const sourceContext = sourceCanvas.getContext('2d'),
                 measurement = this.measureCanvasContextContent(sourceContext, targetWidth, alphaThreshold),
@@ -456,7 +459,7 @@
                     targetWidth = currentWidth,
                     targetHeight = currentHeight;
 
-                if(input.outline > 0 && input.outlineMode === 'inside'){
+                if (input.outline > 0 && input.outlineMode === 'inside') {
                     scaledWidth -= input.outline * 2;
                     scaledHeight -= input.outline * 2;
                     targetHeight -= outlineWidth * 2;
