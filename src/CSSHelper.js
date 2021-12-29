@@ -14,7 +14,8 @@ export class CSSHelper {
         imageFormat: 'image/png',
         imageQuality: 1,
         logTiming: false,
-        setDimensions: false
+        setDimensions: false,
+        emojis: [],
     };
     styleNode = null;
     renderer = null;
@@ -55,7 +56,7 @@ export class CSSHelper {
 
     parseDataAttributes(node) {
         let props = [
-                'bgcolor',
+                'bgcolor', 'color', 'font', 'target-width',
                 'scale', 'rotate', 'crop',
                 'pixelate', 'outline', 'outline-color', 'outline-mode'
             ],
@@ -88,7 +89,20 @@ export class CSSHelper {
             return setTimeout(this.deploy.bind(this), 15);
         }
 
-        this.options.targetNode.querySelectorAll('[data-emoji]').forEach(node => {
+        let nodes = Array.from(this.options.targetNode.querySelectorAll('[data-emoji]'));
+
+        this.options.emojis.forEach(emoji => {
+            if (typeof emoji !== 'string') {
+                emoji = JSON.stringify(emoji);
+            }
+            const node = document.createElement('div');
+            node.dataset.emoji = emoji;
+            nodes.push(node);
+        });
+
+        this.options.emojis = [];
+
+        nodes.forEach(node => {
             if (node.dataset.emojikey) {
                 return true;
             }
