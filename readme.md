@@ -89,6 +89,7 @@ The `CSSHelper` class handles DOM, CSS and Caching in the browser.
 ###Options
 | option | type | default | description |
 | --- | --- | --- | --- |
+| selectorGenerator | function | `/*code*/` | the selector generator, see code for default implementation and arguments |
 | selectorPrefix | string |  | selector fragment to prepend to generated selectors |
 | selectorSuffix | string |  | selector fragment to append to generated selectors |
 | propertyGenerator | function | `/*code*/` | generates the property inside the CSSRule, defaults to `background-image`, see code for actual function |

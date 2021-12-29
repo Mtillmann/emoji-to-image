@@ -4,6 +4,7 @@ class CSSHelper {
         selectorPrefix: '',
         selectorSuffix: '',
         propertyGenerator: dataURL => `background-image:url("${dataURL}");`,
+        selectorGenerator: (emoji, key, prefix, suffix) => `${prefix}[data-emojikey="${key}"]${suffix}`,
         targetNode: document.body,
         styleParentNode: document.head,
         onRender: null,
@@ -92,7 +93,7 @@ class CSSHelper {
 
             const emoji = this.renderer.normalizeInput(this.parseDataAttributes(node)),
                 key = this.renderer.normalize(emoji),
-                selector = `${this.options.selectorPrefix}[data-emojikey="${key}"]${this.options.selectorSuffix}`;
+                selector = this.options.selectorGenerator(emoji.emoji, key, this.options.selectorPrefix, this.options.selectorSuffix);
 
             node.dataset.emojikey = key;
 
