@@ -89,6 +89,7 @@ The `CSSHelper` class handles DOM, CSS and Caching in the browser.
 ###Options
 | option | type | default | description |
 | --- | --- | --- | --- |
+| selectorGenerator | function | `/*code*/` | the selector generator, see code for default implementation and arguments |
 | selectorPrefix | string |  | selector fragment to prepend to generated selectors |
 | selectorSuffix | string |  | selector fragment to append to generated selectors |
 | propertyGenerator | function | `/*code*/` | generates the property inside the CSSRule, defaults to `background-image`, see code for actual function |
@@ -102,6 +103,7 @@ The `CSSHelper` class handles DOM, CSS and Caching in the browser.
 | imageQuality | float | 1 | Quality of the image, 0 is worst, 1 is best |
 | logTiming | bool | false | if true, the helper will log to console how long the deploy took. Useful to see how much of an impact the caching has |
 | setDimensions | bool | false | when set, a second css rule containing the actual output dimensions will be generated |
+| emojis | array | [] | optional list of emojis to render, regardless of existence in DOM. Array elements can be plain emojis or emoji objects according to renderer options |
 
 ###Usage
 In a document where you want to use emojis as background images you'd use the CSSHelper like this:
@@ -161,7 +163,7 @@ yields the same key as
 <div data-emoji="🌶️" data-emoji-scale="0.4" data-emoji-rotate="20deg"></div>
 ```
 All attributes:
-`data-emoji-color` `data-emoji-font` `data-emoji-bgcolor` `data-emoji-scale` `data-emoji-rotate`  `-data-emoji-crop` `data-emoji-pixelate` `data-emoji-outline` `data-emoji-outline-color` `data-emoji-outline-mode` `data-emoji-alpha-threshold`
+`data-emoji-target-width` `data-emoji-color` `data-emoji-font` `data-emoji-bgcolor` `data-emoji-scale` `data-emoji-rotate`  `data-emoji-crop` `data-emoji-pixelate` `data-emoji-outline` `data-emoji-outline-color` `data-emoji-outline-mode` `data-emoji-alpha-threshold`
 
 ##Caching
 Caching is done through the `CacheStorage`-API. Each rendered emoji's blob is assigned a URI based on the emoji's generated key.
