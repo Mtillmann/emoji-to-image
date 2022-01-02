@@ -10,6 +10,7 @@ export class BaseRenderer {
         bgcolor: false,
         color: null,
         font: 'sans-serif',
+        fontSize: null,
         alphaThreshold: 0
     }
 
@@ -114,8 +115,10 @@ export class BaseRenderer {
             return this.measureCache[cacheKey];
         }
 
-        const fontSize = 100,
+        const fontSize = parseInt(input.fontSize || 100, 10),
             dim = fontSize + fontSize * .5;
+
+
 
         this.measureCanvas.width = dim;
         this.measureCanvas.height = dim;
@@ -129,6 +132,10 @@ export class BaseRenderer {
 
         let measurement = this.measureCanvasContextContent(this.measureContext, input.targetWidth, input.alphaThreshold),
             targetFontSize = measurement.scaleFactor * fontSize;
+
+        if (input.fontSize) {
+            targetFontSize = input.fontSize;
+        }
 
         this.measureCache[cacheKey] = {
             width: measurement.dims.width,

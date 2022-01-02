@@ -9,6 +9,7 @@ class CSSHelper {
         selectorSuffix: '',
         propertyGenerator: dataURL => `background-image:url("${dataURL}");`,
         selectorGenerator: (emoji, key, prefix, suffix) => `${prefix}[data-emojikey="${key}"]${suffix}`,
+        selectorPropertyAttacher: (node, key) => { node.dataset.emojikey = key; },
         targetNode: document.body,
         styleParentNode: document.head,
         onRender: null,
@@ -20,6 +21,7 @@ class CSSHelper {
         logTiming: false,
         setDimensions: false,
         emojis: [],
+        deployOnConstruct : true,
     };
     styleNode = null;
     renderer = null;
@@ -49,10 +51,14 @@ class CSSHelper {
             caches.open(this.options.cacheName).then(cache => {
                 this.cache = cache;
                 this.ready = true;
-                this.deploy();
+                if(this.options.deployOnConstruct){
+                    this.deploy();
+                }
             });
         } else {
-            this.deploy();
+            if(this.options.deployOnConstruct){
+                this.deploy();
+            }
         }
 
 
@@ -115,7 +121,8 @@ class CSSHelper {
                 key = this.renderer.normalize(emoji),
                 selector = this.options.selectorGenerator(emoji.emoji, key, this.options.selectorPrefix, this.options.selectorSuffix);
 
-            node.dataset.emojikey = key;
+            this.options.selectorPropertyAttacher(node, key);
+
 
             if (key in this.processedEmojis) {
                 return true;

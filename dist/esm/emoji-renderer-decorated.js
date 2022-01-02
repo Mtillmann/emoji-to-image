@@ -10,6 +10,7 @@ class BaseRenderer {
         bgcolor: false,
         color: null,
         font: 'sans-serif',
+        fontSize: null,
         alphaThreshold: 0
     }
 
@@ -114,8 +115,10 @@ class BaseRenderer {
             return this.measureCache[cacheKey];
         }
 
-        const fontSize = 100,
+        const fontSize = parseInt(input.fontSize || 100, 10),
             dim = fontSize + fontSize * .5;
+
+
 
         this.measureCanvas.width = dim;
         this.measureCanvas.height = dim;
@@ -129,6 +132,10 @@ class BaseRenderer {
 
         let measurement = this.measureCanvasContextContent(this.measureContext, input.targetWidth, input.alphaThreshold),
             targetFontSize = measurement.scaleFactor * fontSize;
+
+        if (input.fontSize) {
+            targetFontSize = input.fontSize;
+        }
 
         this.measureCache[cacheKey] = {
             width: measurement.dims.width,
@@ -280,6 +287,9 @@ class BaseRenderer {
             }
         }
 
+        //todo key, should be put on here, avoid multiple calls
+        //to the normalize method later on
+
         return output;
     }
 
@@ -308,12 +318,11 @@ class TransformedRenderer extends BaseRenderer {
         }
 
         const sourceCanvas = super.render(input),
-            scaleX = input.scaleX || input.scale || 1,
-            scaleY = input.scaleY || input.scale || 1,
+            scale = input.scale || 1,
             originalWidth = parseInt(sourceCanvas.getAttribute('width'), 10),
             originalHeight = parseInt(sourceCanvas.getAttribute('height'), 10),
-            scaledWidth = originalWidth * scaleX,
-            scaledHeight = originalHeight * scaleY;
+            scaledWidth = originalWidth * scale,
+            scaledHeight = originalHeight * scale;
 
         let destinationCanvas = document.createElement('canvas'),
             destinationContext = destinationCanvas.getContext('2d');

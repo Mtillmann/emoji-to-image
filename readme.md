@@ -58,6 +58,7 @@ Renders an emoji-character:
 | bgcolor | string | null | optional background color for the output image |
 | color | string | null | optional text color for regular characters |
 | font | string | `sans-serif` | optional font name for regular characters |
+| fontSize | string | null | optional font size to force on renderer |
 | alphaThreshold | number | 0 | 0-255, alpha byte value below which the content of a pixel is discarded while cropping. Improves perceived crop quality, especially for pixelated rendering |
 
 ## TransformedRenderer
@@ -163,7 +164,7 @@ yields the same key as
 <div data-emoji="🌶️" data-emoji-scale="0.4" data-emoji-rotate="20deg"></div>
 ```
 All attributes:
-`data-emoji-target-width` `data-emoji-color` `data-emoji-font` `data-emoji-bgcolor` `data-emoji-scale` `data-emoji-rotate`  `data-emoji-crop` `data-emoji-pixelate` `data-emoji-outline` `data-emoji-outline-color` `data-emoji-outline-mode` `data-emoji-alpha-threshold`
+`data-emoji-target-width` `data-emoji-color` `data-emoji-font` `data-emoji-bgcolor` `data-emoji-scale` `data-emoji-rotate`  `data-emoji-crop` `data-emoji-pixelate` `data-emoji-outline` `data-emoji-outline-color` `data-emoji-outline-mode` `data-emoji-alpha-threshold` `data-emoji-font-size`
 
 ##Caching
 Caching is done through the `CacheStorage`-API. Each rendered emoji's blob is assigned a URI based on the emoji's generated key.
