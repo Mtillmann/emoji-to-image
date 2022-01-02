@@ -283,7 +283,6 @@
 
             super({
                 ...{
-                    useCache: false,
                     deployOnConstruct: false,
                     selectorGenerator: (emoji, key, prefix, suffix) => `${prefix}.emojicomp_${key}${suffix}, ${prefix}[data-compose-key="${key}"]${suffix}`,
                     compositions: [],
@@ -445,8 +444,6 @@
 
                 context.drawImage(emojiCanvas, x, y);
             });
-
-            document.body.appendChild(canvas);
 
             canvas.toBlob(blob => {
                 this.setCache(key, blob);
