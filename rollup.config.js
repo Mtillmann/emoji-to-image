@@ -18,6 +18,15 @@ const buildMode = process.env.BUILD || 'dev',
                 format: 'umd',
                 extend : true
             }
+        },
+        {
+            input: 'src/ComposedCSSHelper.js',
+            output: {
+                name: umdNamespace,
+                file: 'dist/umd/emoji-composed-csshelper.js',
+                format: 'umd',
+                extend : true
+            }
         }
     ];
 

@@ -286,6 +286,9 @@
                 }
             }
 
+            //todo key, should be put on here, avoid multiple calls
+            //to the normalize method later on
+
             return output;
         }
 
