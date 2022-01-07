@@ -457,8 +457,8 @@ class DecoratedRenderer extends TransformedRenderer {
                 currentWidth = parseInt(destinationCanvas.getAttribute('width'), 10),
                 currentHeight = parseInt(destinationCanvas.getAttribute('height'), 10);
 
-            let scaledWidth = currentWidth * scaleDownFactor,
-                scaledHeight = currentHeight * scaleDownFactor,
+            let scaledWidth = Math.round(currentWidth * scaleDownFactor),
+                scaledHeight = Math.round(currentHeight * scaleDownFactor),
                 targetWidth = currentWidth,
                 targetHeight = currentHeight;
 
