@@ -51,7 +51,7 @@ A renderer instance will cache each generated canvas and return the same canvas 
 
 Renders an emoji-character:
 
-###Options
+### Options
 | option | type | default | description |
 | --- | --- | --- | --- |
 | targetWidth | number | 600 | the target width of the emoji to render |
@@ -63,8 +63,9 @@ Renders an emoji-character:
 
 ## TransformedRenderer
 
-Extends `BaseRenderer` and adds crop, rotate and scale featurs:
-###Options
+Extends `BaseRenderer` and adds crop, rotate and scale features:
+
+### Options
 | option | type | default | description |
 | --- | --- | --- | --- |
 | crop | bool | true | crops the output image to actual content size. This may cause the image to be smaller than the given `targetWidth` option because CanvasRenderingContext2D's text rendering- and measuring facilities aren't perfect. |
@@ -74,7 +75,8 @@ Extends `BaseRenderer` and adds crop, rotate and scale featurs:
 ## DecoratedRenderer
 
 Extends `TransformedRenderer` and adds pixelate and outline effects:
-###Options
+
+### Options
 | option | type | default | description |
 | --- | --- | --- | --- |
 | pixelate | number | 0 | when > 0, the outputs internal resolution will be divided by given number, then scaled up to create a pixelation effect |
@@ -86,8 +88,9 @@ Extends `TransformedRenderer` and adds pixelate and outline effects:
 
 ## CSSHelper
 
-The `CSSHelper` class handles DOM, CSS and Caching in the browser. 
-###Options
+The `CSSHelper` class handles DOM, CSS and Caching in the browser.
+
+### Options
 | option | type | default | description |
 | --- | --- | --- | --- |
 | selectorGenerator | function | `/*code*/` | the selector generator, see code for default implementation and arguments |
@@ -165,6 +168,9 @@ yields the same key as
 ```
 All attributes:
 `data-emoji-target-width` `data-emoji-color` `data-emoji-font` `data-emoji-bgcolor` `data-emoji-scale` `data-emoji-rotate`  `data-emoji-crop` `data-emoji-pixelate` `data-emoji-outline` `data-emoji-outline-color` `data-emoji-outline-mode` `data-emoji-alpha-threshold` `data-emoji-font-size`
+
+## Composed CSSHelper
+
 
 ##Caching
 Caching is done through the `CacheStorage`-API. Each rendered emoji's blob is assigned a URI based on the emoji's generated key.
