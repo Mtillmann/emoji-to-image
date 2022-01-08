@@ -411,7 +411,6 @@
                         });
                 } else {
                     this.createComposition(selector, composition, key);
-                    console.log(selector);
                 }
             });
 

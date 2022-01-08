@@ -409,7 +409,6 @@ class ComposedCSSHelper extends CSSHelper {
                     });
             } else {
                 this.createComposition(selector, composition, key);
-                console.log(selector);
             }
         });
 
