@@ -24,6 +24,7 @@ class CSSHelper {
         setDimensions: false,
         emojis: [],
         deployOnConstruct: true,
+        omitDOM : false
     };
     styleNode = null;
     renderer = null;
@@ -101,7 +102,7 @@ class CSSHelper {
         }
 
         let nodes = [];
-        if (this.options.targetNode) {
+        if (this.options.targetNode && !this.options.omitDOM) {
             nodes = Array.from(this.options.targetNode.querySelectorAll('[data-emoji]'));
         }
 
