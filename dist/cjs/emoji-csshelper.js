@@ -9,7 +9,9 @@ class CSSHelper {
         selectorSuffix: '',
         propertyGenerator: dataURL => `background-image:url("${dataURL}");`,
         selectorGenerator: (emoji, key, prefix, suffix) => `${prefix}[data-emojikey="${key}"]${suffix}`,
-        selectorPropertyAttacher: (node, key) => { node.dataset.emojikey = key; },
+        selectorPropertyAttacher: (node, key) => {
+            node.dataset.emojikey = key;
+        },
         targetNode: document.body,
         styleParentNode: document.head,
         onRender: null,
@@ -21,7 +23,7 @@ class CSSHelper {
         logTiming: false,
         setDimensions: false,
         emojis: [],
-        deployOnConstruct : true,
+        deployOnConstruct: true,
     };
     styleNode = null;
     renderer = null;
@@ -50,12 +52,12 @@ class CSSHelper {
             caches.open(this.options.cacheName).then(cache => {
                 this.cache = cache;
                 this.ready = true;
-                if(this.options.deployOnConstruct){
+                if (this.options.deployOnConstruct) {
                     this.deploy();
                 }
             });
         } else {
-            if(this.options.deployOnConstruct){
+            if (this.options.deployOnConstruct) {
                 this.deploy();
             }
         }
@@ -98,7 +100,10 @@ class CSSHelper {
             return setTimeout(this.deploy.bind(this), 15);
         }
 
-        let nodes = Array.from(this.options.targetNode.querySelectorAll('[data-emoji]'));
+        let nodes = [];
+        if (this.options.targetNode) {
+            nodes = Array.from(this.options.targetNode.querySelectorAll('[data-emoji]'));
+        }
 
         this.options.emojis.forEach(emoji => {
             if (typeof emoji !== 'string') {
@@ -147,7 +152,7 @@ class CSSHelper {
                             this.options.onRender(eventPayload);
                         }
 
-                        this.options.targetNode.dispatchEvent(new CustomEvent('emoji:rendered', {
+                        (this.options.targetNode || window).dispatchEvent(new CustomEvent('emoji:rendered', {
                             detail: eventPayload,
                             bubbles: true
                         }));
@@ -181,7 +186,7 @@ class CSSHelper {
                 this.options.onRender(eventPayload);
             }
 
-            this.options.targetNode.dispatchEvent(new CustomEvent('emoji:rendered', {
+            (this.options.targetNode || window).dispatchEvent(new CustomEvent('emoji:rendered', {
                 detail: eventPayload,
                 bubbles: true
             }));
@@ -232,7 +237,7 @@ class CSSHelper {
         if (this.options.onDeploy) {
             this.options.onRender(eventPayload);
         }
-        this.options.targetNode.dispatchEvent(new CustomEvent('emoji:deployed', {detail: eventPayload, bubbles: true}));
+        (this.options.targetNode || window).dispatchEvent(new CustomEvent('emoji:deployed', {detail: eventPayload, bubbles: true}));
 
         this.timings = [];
     }
