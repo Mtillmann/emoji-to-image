@@ -23,12 +23,11 @@ export class TransformedRenderer extends BaseRenderer {
         }
 
         const sourceCanvas = super.render(input),
-            scaleX = input.scaleX || input.scale || 1,
-            scaleY = input.scaleY || input.scale || 1,
+            scale = input.scale || 1,
             originalWidth = parseInt(sourceCanvas.getAttribute('width'), 10),
             originalHeight = parseInt(sourceCanvas.getAttribute('height'), 10),
-            scaledWidth = originalWidth * scaleX,
-            scaledHeight = originalHeight * scaleY;
+            scaledWidth = originalWidth * scale,
+            scaledHeight = originalHeight * scale;
 
         let destinationCanvas = document.createElement('canvas'),
             destinationContext = destinationCanvas.getContext('2d');
