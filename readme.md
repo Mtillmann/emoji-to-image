@@ -97,7 +97,7 @@ The `CSSHelper` class handles DOM, CSS and Caching in the browser.
 | selectorPrefix | string |  | selector fragment to prepend to generated selectors. Must include trailing whitespace if required. |
 | selectorSuffix | string |  | selector fragment to append to generated selectors. Must include leading whitespace if required. |
 | propertyGenerator | function | `/*code*/` | generates the property inside the CSSRule, defaults to `background-image`, see code for actual function |
-| targetNode | Node | document.body | DOM node inside which to scan for `data-emoji` nodes |
+| targetNode | Node | document.body | DOM node inside which to scan for `data-emoji` nodes. If no target node is given, events will be dispatched on `window` |
 | styleParentNode | Node | document.head | DOM node to which to append the generated stylesheet |
 | onRender | function | null | callback when an emoji has been rendered or retrieved from cache, additionally you can listen for an `emoji:rendered` event on the targetNode or any of its parents |
 | onDeploy | function | null | callback when an deploy() call has ended, i.e. all rules have been generated, additionally you can listen for an `emoji:deployed` event on the targetNode or any of its parents |
