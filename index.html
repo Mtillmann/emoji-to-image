@@ -36,6 +36,14 @@
             background-size: cover;
         }
 
+        .bgp-center{
+            background-position: center;
+        }
+
+        .bgr-no-repeat{
+            background-repeat: no-repeat;
+        }
+
         .markup::before {
             content: attr(data-timing);
             position: absolute;
@@ -705,7 +713,7 @@
                                             });
                                             new EMOJI.CSSHelper({
                                                 targetNode: document.querySelector('#helper-demo-custom-selectors .markup .non-existing'),
-                                                selectorGenerator : (emoji, key, prefix, suffix) => `${emoji.className}`,
+                                                selectorGenerator : (emoji, key, prefix, suffix) => `.${emoji.className}`,
                                                 emojis : [
                                                     {
                                                         emoji : "🧨",
@@ -718,7 +726,7 @@
                                 </script>
                             </div>
                             <div class="col-12 col-lg-6 markup checkered waiting">
-                                <div class="dynamite"></div>
+                                <div class="dynamite position-absolute bgr-no-repeat bgp-center bgs-contain translate-middle w-50 h-50 top-50 start-50"></div>
                             </div>
                         </div> <!-- end #helper-demo-custom-selectors -->
                     </div>
@@ -752,7 +760,7 @@
         //render all demos in sequence to avoid them shitting up each others timings
         setTimeout(helperDemos.shift(), 500)
 
-        document.addEventListener('emoji:deployed', e => {
+        window.addEventListener('emoji:deployed', e => {
             const nextWaiting = document.querySelector('.markup.waiting');
             if (nextWaiting) {
                 nextWaiting.classList.remove('waiting');
