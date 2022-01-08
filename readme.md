@@ -109,6 +109,7 @@ The `CSSHelper` class handles DOM, CSS and Caching in the browser.
 | setDimensions | bool | false | when set, a second css rule containing the actual output dimensions will be generated |
 | emojis | array | [] | optional list of emojis to render, regardless of existence in DOM. Array elements can be plain emojis or emoji objects according to renderer options |
 | deployOnConstruct | bool | true | Controls if the Helper should call its deploy method as soon as it's instantiated. Also required for the ComposedCSSHelper, see below... |
+| omitDOM | bool | false | set to true if you don't want the given targetNode scanned for nodes |
 
 ###Usage
 In a document where you want to use emojis as background images you'd use the CSSHelper like this:
