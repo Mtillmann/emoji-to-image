@@ -31,7 +31,6 @@ class CSSHelper {
     timings = [];
 
     constructor(options, renderer) {
-        //todo make emoji option to skip dom!
 
         this.options = {...this.options, ...options};
         if (!renderer) {
@@ -119,10 +118,9 @@ class CSSHelper {
 
             const emoji = this.renderer.normalizeInput(this.parseDataAttributes(node)),
                 key = this.renderer.normalize(emoji),
-                selector = this.options.selectorGenerator(emoji.emoji, key, this.options.selectorPrefix, this.options.selectorSuffix);
+                selector = this.options.selectorGenerator(emoji, key, this.options.selectorPrefix, this.options.selectorSuffix);
 
             this.options.selectorPropertyAttacher(node, key);
-
 
             if (key in this.processedEmojis) {
                 return true;

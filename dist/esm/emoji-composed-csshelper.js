@@ -27,7 +27,6 @@ class CSSHelper {
     timings = [];
 
     constructor(options, renderer) {
-        //todo make emoji option to skip dom!
 
         this.options = {...this.options, ...options};
         if (!renderer) {
@@ -115,10 +114,9 @@ class CSSHelper {
 
             const emoji = this.renderer.normalizeInput(this.parseDataAttributes(node)),
                 key = this.renderer.normalize(emoji),
-                selector = this.options.selectorGenerator(emoji.emoji, key, this.options.selectorPrefix, this.options.selectorSuffix);
+                selector = this.options.selectorGenerator(emoji, key, this.options.selectorPrefix, this.options.selectorSuffix);
 
             this.options.selectorPropertyAttacher(node, key);
-
 
             if (key in this.processedEmojis) {
                 return true;
@@ -261,7 +259,7 @@ class ComposedCSSHelper extends CSSHelper {
             ...{
                 key: 'DEFAULT',
                 width: 400,
-                height: 600,
+                height: 400,
                 bgmode: 'solid',
                 bgcolor: '#ffffff'
             }, ...options.defaultCompositionProperties
@@ -277,17 +275,20 @@ class ComposedCSSHelper extends CSSHelper {
 
         super({
             ...{
-                deployOnConstruct: false,
+                localDeployOnConstruct : options.deployOnConstruct || true,
                 selectorGenerator: (emoji, key, prefix, suffix) => `${prefix}.emojicomp_${key}${suffix}, ${prefix}[data-compose-key="${key}"]${suffix}`,
                 compositions: [],
                 positionSnap : 0
             }, ...options, ...{
                 defaultCompositionProperties,
-                defaultEmojiProperties
+                defaultEmojiProperties,
+                deployOnConstruct: false
             }
         }, renderer);
 
-        this.deploy();
+        if(this.options.localDeployOnConstruct){
+            this.deploy();
+        }
     }
 
     parseComposeDataAttributes(node) {
@@ -297,7 +298,7 @@ class ComposedCSSHelper extends CSSHelper {
             };
 
         attributes.forEach(attr => {
-            if (/\-\d+/.test(attr)) {
+            if (/-\d+/.test(attr)) {
                 const parts = /\-(\d+)([\w\-]+)/.exec(attr),
                     index = parseInt(parts[1], 10),
                     prop = parts[2].replace(/^\w/, m => m[0].toLowerCase());
@@ -404,6 +405,7 @@ class ComposedCSSHelper extends CSSHelper {
                     });
             } else {
                 this.createComposition(selector, composition, key);
+                console.log(selector);
             }
         });
 
@@ -426,7 +428,6 @@ class ComposedCSSHelper extends CSSHelper {
             context.closePath();
         }
 
-
         composition.emojis.forEach(emoji => {
             const emojiCanvas = this.renderer.render({
                     ...emoji, ...{targetWidth: composition.width}
@@ -443,10 +444,7 @@ class ComposedCSSHelper extends CSSHelper {
             this.setCache(key, blob);
             this.createCSSRule(selector.trim(), URL.createObjectURL(blob));
         });
-
     }
-
-
 }
 
 export { ComposedCSSHelper };

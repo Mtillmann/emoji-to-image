@@ -10,7 +10,7 @@ export class ComposedCSSHelper extends CSSHelper {
             ...{
                 key: 'DEFAULT',
                 width: 400,
-                height: 600,
+                height: 400,
                 bgmode: 'solid',
                 bgcolor: '#ffffff'
             }, ...options.defaultCompositionProperties
@@ -26,17 +26,20 @@ export class ComposedCSSHelper extends CSSHelper {
 
         super({
             ...{
-                deployOnConstruct: false,
+                localDeployOnConstruct : options.deployOnConstruct || true,
                 selectorGenerator: (emoji, key, prefix, suffix) => `${prefix}.emojicomp_${key}${suffix}, ${prefix}[data-compose-key="${key}"]${suffix}`,
                 compositions: [],
                 positionSnap : 0
             }, ...options, ...{
                 defaultCompositionProperties,
-                defaultEmojiProperties
+                defaultEmojiProperties,
+                deployOnConstruct: false
             }
         }, renderer);
 
-        this.deploy()
+        if(this.options.localDeployOnConstruct){
+            this.deploy()
+        }
     }
 
     parseComposeDataAttributes(node) {
@@ -46,7 +49,7 @@ export class ComposedCSSHelper extends CSSHelper {
             }
 
         attributes.forEach(attr => {
-            if (/\-\d+/.test(attr)) {
+            if (/-\d+/.test(attr)) {
                 const parts = /\-(\d+)([\w\-]+)/.exec(attr),
                     index = parseInt(parts[1], 10),
                     prop = parts[2].replace(/^\w/, m => m[0].toLowerCase());
@@ -153,6 +156,7 @@ export class ComposedCSSHelper extends CSSHelper {
                     });
             } else {
                 this.createComposition(selector, composition, key);
+                console.log(selector);
             }
         });
 
@@ -175,7 +179,6 @@ export class ComposedCSSHelper extends CSSHelper {
             context.closePath();
         }
 
-
         composition.emojis.forEach(emoji => {
             const emojiCanvas = this.renderer.render({
                     ...emoji, ...{targetWidth: composition.width}
@@ -192,8 +195,5 @@ export class ComposedCSSHelper extends CSSHelper {
             this.setCache(key, blob);
             this.createCSSRule(selector.trim(), URL.createObjectURL(blob));
         });
-
     }
-
-
 }

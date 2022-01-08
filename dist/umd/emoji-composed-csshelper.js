@@ -33,7 +33,6 @@
         timings = [];
 
         constructor(options, renderer) {
-            //todo make emoji option to skip dom!
 
             this.options = {...this.options, ...options};
             if (!renderer) {
@@ -121,10 +120,9 @@
 
                 const emoji = this.renderer.normalizeInput(this.parseDataAttributes(node)),
                     key = this.renderer.normalize(emoji),
-                    selector = this.options.selectorGenerator(emoji.emoji, key, this.options.selectorPrefix, this.options.selectorSuffix);
+                    selector = this.options.selectorGenerator(emoji, key, this.options.selectorPrefix, this.options.selectorSuffix);
 
                 this.options.selectorPropertyAttacher(node, key);
-
 
                 if (key in this.processedEmojis) {
                     return true;
@@ -267,7 +265,7 @@
                 ...{
                     key: 'DEFAULT',
                     width: 400,
-                    height: 600,
+                    height: 400,
                     bgmode: 'solid',
                     bgcolor: '#ffffff'
                 }, ...options.defaultCompositionProperties
@@ -283,17 +281,20 @@
 
             super({
                 ...{
-                    deployOnConstruct: false,
+                    localDeployOnConstruct : options.deployOnConstruct || true,
                     selectorGenerator: (emoji, key, prefix, suffix) => `${prefix}.emojicomp_${key}${suffix}, ${prefix}[data-compose-key="${key}"]${suffix}`,
                     compositions: [],
                     positionSnap : 0
                 }, ...options, ...{
                     defaultCompositionProperties,
-                    defaultEmojiProperties
+                    defaultEmojiProperties,
+                    deployOnConstruct: false
                 }
             }, renderer);
 
-            this.deploy();
+            if(this.options.localDeployOnConstruct){
+                this.deploy();
+            }
         }
 
         parseComposeDataAttributes(node) {
@@ -303,7 +304,7 @@
                 };
 
             attributes.forEach(attr => {
-                if (/\-\d+/.test(attr)) {
+                if (/-\d+/.test(attr)) {
                     const parts = /\-(\d+)([\w\-]+)/.exec(attr),
                         index = parseInt(parts[1], 10),
                         prop = parts[2].replace(/^\w/, m => m[0].toLowerCase());
@@ -410,6 +411,7 @@
                         });
                 } else {
                     this.createComposition(selector, composition, key);
+                    console.log(selector);
                 }
             });
 
@@ -432,7 +434,6 @@
                 context.closePath();
             }
 
-
             composition.emojis.forEach(emoji => {
                 const emojiCanvas = this.renderer.render({
                         ...emoji, ...{targetWidth: composition.width}
@@ -449,10 +450,7 @@
                 this.setCache(key, blob);
                 this.createCSSRule(selector.trim(), URL.createObjectURL(blob));
             });
-
         }
-
-
     }
 
     exports.ComposedCSSHelper = ComposedCSSHelper;
