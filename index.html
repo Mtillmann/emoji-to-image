@@ -687,17 +687,17 @@
                                      class="w-100 h-100 start-5 top-5 translate-middle bgs-contain"></div>
                             </div>
                         </div> <!-- end #helper-demo-errors -->
-                        <div class="row helper-demo mt-4" id="helper-demo-custom-selectors">
+                        <div class="row helper-demo mt-4" id="helper-demo-selectors">
                             <div class="col-12">
                                 <h2 class="display-6">
                                     Custom Selectors
                                 </h2>
                             </div>
                             <div class="col-12 col-lg-6">
-                                <ul class="nav nav-pills mb-3" id="helper-demo-custom-selectors-tabs" role="tablist"></ul>
-                                <div class="tab-content" id="helper-demo-custom-selectors-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-custom-selectors-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-custom-selectors-description-tab">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-selectors-tabs" role="tablist"></ul>
+                                <div class="tab-content" id="helper-demo-selectors-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-selectors-description"
+                                         role="tabpanel" aria-labelledby="helper-demo-selectors-description-tab">
                                         <p>
                                             If you don't want to or can't rely on the helper's built-in mechanism for creating
                                             the selectors and attributes, you can pass the emojis to render with custom
@@ -712,7 +712,7 @@
                                                 targetWidth: 250
                                             });
                                             new EMOJI.CSSHelper({
-                                                targetNode: document.querySelector('#helper-demo-custom-selectors .markup .non-existing'),
+                                                targetNode: document.querySelector('#helper-demo-selectors .markup'),
                                                 selectorGenerator : (emoji, key, prefix, suffix) => `.${emoji.className}`,
                                                 emojis : [
                                                     {
@@ -728,7 +728,59 @@
                             <div class="col-12 col-lg-6 markup checkered waiting">
                                 <div class="dynamite position-absolute bgr-no-repeat bgp-center bgs-contain translate-middle w-50 h-50 top-50 start-50"></div>
                             </div>
-                        </div> <!-- end #helper-demo-custom-selectors -->
+                        </div> <!-- end #helper-demo-selectors -->
+                        <div class="row helper-demo mt-4" id="helper-composition">
+                            <div class="col-12">
+                                <h2 class="display-6">
+                                    Compositions
+                                </h2>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <ul class="nav nav-pills mb-3" id="helper-composition-tabs" role="tablist"></ul>
+                                <div class="tab-content" id="helper-composition-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-composition-description"
+                                         role="tabpanel" aria-labelledby="helper-composition-description-tab">
+                                        <p>
+                                            Rendering multiple nodes to create a composition of emojis may
+                                            not be the most efficient way. To avoid this, you can pass a
+                                            list of emojis to the ComposedCSSHelper class and render them
+                                            onto a single image.
+                                        </p>
+                                    </div>
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        helperDemos.push(() => {//remove
+                                            const renderer = new EMOJI.DecoratedRenderer({
+                                                targetWidth: 250
+                                            });
+                                            new EMOJI.ComposedCSSHelper({
+                                                useCache: false,
+                                                targetNode: document.querySelector('#helper-composition .markup'),
+
+                                                compositions : [
+                                                    {
+                                                        bgcolor: '#ff0000',
+                                                        bgmode : 'solid',
+                                                        key : 'beef',
+                                                        width : 500,
+                                                        height : 370,
+                                                        emojis : [{
+                                                            emoji : "🧨"
+                                                        },{
+                                                            emoji : 'a'
+                                                        }]
+                                                    }
+                                                ]
+                                            }, renderer);
+                                        });//remove
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-12 col-lg-6 markup checkered waiting">
+                                <div data-compose-key="beef" class="position-absolute bgr-no-repeat bgp-center bgs-contain translate-middle w-100 h-100 top-50 start-50"></div>
+                            </div>
+                        </div> <!-- end #helper-composition -->
                     </div>
                 </div>
             </div>
