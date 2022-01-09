@@ -318,8 +318,8 @@
                                 <ul class="nav nav-pills mb-3" id="helper-demo-basic-tabs" role="tablist">
                                 </ul>
                                 <div class="tab-content" id="helper-demo-basic-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-basic-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-basic-description-tab">
+                                    <div class="tab-pane fade show active" id="helper-demo-basic-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-basic-desc-tab">
                                         <p>
                                             A single emoji is rendered using the BaseRenderer Class.
                                             Properties like dimensions, background image position etc
@@ -353,8 +353,8 @@
                                 <ul class="nav nav-pills mb-3" id="helper-demo-transformed-tabs" role="tablist">
                                 </ul>
                                 <div class="tab-content" id="helper-demo-transformed-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-transformed-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-transformed-description-tab">
+                                    <div class="tab-pane fade show active" id="helper-demo-transformed-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-transformed-desc-tab">
                                         <p>
                                             Two rotated emojis are rendered using the json attribute. The right emoji
                                             is smaller because `crop` is disabled for the second element.
@@ -392,8 +392,8 @@
                                 <ul class="nav nav-pills mb-3" id="helper-demo-decorated-tabs" role="tablist">
                                 </ul>
                                 <div class="tab-content" id="helper-demo-decorated-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-decorated-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-decorated-description-tab">
+                                    <div class="tab-pane fade show active" id="helper-demo-decorated-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-decorated-desc-tab">
                                         <p>
                                             Each emoji is rendered with an increasing amount of pixelation,
                                             while the rotation of all emojis is set on the renderer instance.
@@ -434,8 +434,8 @@
                             <div class="col-12 col-lg-6">
                                 <ul class="nav nav-pills mb-3" id="helper-demo-outline-tabs" role="tablist"></ul>
                                 <div class="tab-content" id="helper-demo-outline-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-outline-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-outline-description-tab">
+                                    <div class="tab-pane fade show active" id="helper-demo-outline-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-outline-desc-tab">
                                         <p>
                                             Outlines only work for pixelated emojis. The left image uses the
                                             default "outlineMode"-option "inside" to render the outline inside its
@@ -476,8 +476,8 @@
                             <div class="col-12 col-lg-6">
                                 <ul class="nav nav-pills mb-3" id="helper-demo-dims-tabs" role="tablist"></ul>
                                 <div class="tab-content" id="helper-demo-dims-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-dims-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-dims-description-tab">
+                                    <div class="tab-pane fade show active" id="helper-demo-dims-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-dims-desc-tab">
                                         <p>
                                             Platform-specific emoji-implementations may have different aspect ratios
                                             for the same emoji. If you don't want to guess you can have the exact output
@@ -521,8 +521,8 @@
                             <div class="col-12 col-lg-6">
                                 <ul class="nav nav-pills mb-3" id="helper-demo-dataapi-tabs" role="tablist"></ul>
                                 <div class="tab-content" id="helper-demo-dataapi-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-dataapi-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-dataapi-description-tab">
+                                    <div class="tab-pane fade show active" id="helper-demo-dataapi-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-dataapi-desc-tab">
                                         <p>
                                             In addition to using a complex json data-emoji-attribute, you can pass
                                             all renderer options via data-attributes. The attribute names correspond to
@@ -563,8 +563,8 @@
                             <div class="col-12 col-lg-6">
                                 <ul class="nav nav-pills mb-3" id="helper-demo-dynamiccontent-tabs" role="tablist"></ul>
                                 <div class="tab-content" id="helper-demo-dynamiccontent-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-dynamiccontent-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-dynamiccontent-description-tab">
+                                    <div class="tab-pane fade show active" id="helper-demo-dynamiccontent-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-dynamiccontent-desc-tab">
                                         <p>
                                             A CSSHelper-instance's deploy method can be called again when you have added
                                             content to your document that needs to be processed:
@@ -597,7 +597,7 @@
                                                     }
                                                     helper.deploy();
                                                 }
-                                            document.querySelector('#helper-demo-dynamiccontent-description a').addEventListener('click', e => {
+                                            document.querySelector('#helper-demo-dynamiccontent-desc a').addEventListener('click', e => {
                                                 e.preventDefault();
                                                 addDivs();
                                             });
@@ -618,8 +618,8 @@
                             <div class="col-12 col-lg-6">
                                 <ul class="nav nav-pills mb-3" id="helper-demo-nocache-tabs" role="tablist"></ul>
                                 <div class="tab-content" id="helper-demo-nocache-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-nocache-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-nocache-description-tab">
+                                    <div class="tab-pane fade show active" id="helper-demo-nocache-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-nocache-desc-tab">
                                         <p>
                                             Compare the timing in the lower right corner to the
                                             timing of the "Pixelation" example above. Caching really improves the
@@ -664,8 +664,8 @@
                             <div class="col-12 col-lg-6">
                                 <ul class="nav nav-pills mb-3" id="helper-demo-errors-tabs" role="tablist"></ul>
                                 <div class="tab-content" id="helper-demo-errors-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-errors-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-errors-description-tab">
+                                    <div class="tab-pane fade show active" id="helper-demo-errors-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-errors-desc-tab">
                                         <p>
                                             Malformed JSON will result in a unicode replacement character being
                                             generated
@@ -702,8 +702,8 @@
                             <div class="col-12 col-lg-6">
                                 <ul class="nav nav-pills mb-3" id="helper-demo-selectors-tabs" role="tablist"></ul>
                                 <div class="tab-content" id="helper-demo-selectors-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-demo-selectors-description"
-                                         role="tabpanel" aria-labelledby="helper-demo-selectors-description-tab">
+                                    <div class="tab-pane fade show active" id="helper-demo-selectors-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-selectors-desc-tab">
                                         <p>
                                             If you don't want to or can't rely on the helper's built-in mechanism for
                                             creating
@@ -744,9 +744,9 @@
                             </div>
                             <div class="col-12 col-lg-6">
                                 <ul class="nav nav-pills mb-3" id="helper-composition-tabs" role="tablist"></ul>
-                                <div class="tab-content" id="helper-composition-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-composition-description"
-                                         role="tabpanel" aria-labelledby="helper-composition-description-tab">
+                                <div class="tab-content" id="helper-demo-composition-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-composition-desc"
+                                         role="tabpanel" aria-labelledby="helper-composition-desc-tab">
                                         <p>
                                             Rendering multiple nodes to create a composition of emojis may
                                             not be the most efficient way. To avoid this, you can pass a
@@ -796,17 +796,17 @@
                                 <div class="emojicomp_fastfood position-absolute bgr-no-repeat bgp-center bgs-contain translate-middle w-100 h-100 top-50 start-50"></div>
                             </div>
                         </div> <!-- end #helper-composition -->
-                        <div class="row helper-demo mt-4" id="helper-data-comp">
+                        <div class="row helper-demo mt-4" id="helper-demo-datacomp">
                             <div class="col-12">
                                 <h2 class="display-6">
                                     Composition Data-Attr API
                                 </h2>
                             </div>
                             <div class="col-12 col-lg-6">
-                                <ul class="nav nav-pills mb-3" id="helper-data-comp-tabs" role="tablist"></ul>
-                                <div class="tab-content" id="helper-data-comp-tabsContent">
-                                    <div class="tab-pane fade show active" id="helper-data-comp-description"
-                                         role="tabpanel" aria-labelledby="helper-data-comp-description-tab">
+                                <ul class="nav nav-pills mb-3" id="helper-demo-datacomp-tabs" role="tablist"></ul>
+                                <div class="tab-content" id="helper-demo-datacomp-tabsContent">
+                                    <div class="tab-pane fade show active" id="helper-demo-datacomp-desc"
+                                         role="tabpanel" aria-labelledby="helper-demo-datacomp-desc-tab">
                                         <p>
                                             You can also use the composition feature by utilizing data-attributes.
                                         </p>
@@ -815,17 +815,14 @@
                                 <script>
                                     document.addEventListener('DOMContentLoaded', () => {
                                         helperDemos.push(() => {//remove
-                                            const renderer = new EMOJI.DecoratedRenderer({
-                                                targetWidth: 250
-                                            });
+                                            const renderer = new EMOJI.DecoratedRenderer();
                                             new EMOJI.ComposedCSSHelper({
-                                                useCache: false,
                                                 defaultCompositionProperties : {
                                                     bgmode : 'transparent',
                                                     width: 570,
                                                     height: 300
                                                 },
-                                                targetNode: document.querySelector('#helper-data-comp .markup')
+                                                targetNode: document.querySelector('#helper-demo-datacomp .markup')
                                             }, renderer);
                                         });//remove
                                     });
@@ -848,7 +845,7 @@
                                      data-compose-2-scale="0.4"
                                 ></div>
                             </div>
-                        </div> <!-- end #helper-data-comp -->
+                        </div> <!-- end #helper-demo-datacomp -->
 
                     </div>
                 </div>
@@ -941,11 +938,11 @@
 
             node.querySelector('.nav-pills').insertAdjacentHTML('beforeend', `
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="helper-demo-${demoName}-description-tab"
+                    <button class="nav-link active" id="helper-demo-${demoName}-desc-tab"
                             data-bs-toggle="pill"
-                            data-bs-target="#helper-demo-${demoName}-description"
+                            data-bs-target="#helper-demo-${demoName}-desc"
                             type="button" role="tab"
-                            aria-controls="helper-demo-${demoName}-description"
+                            aria-controls="helper-demo-${demoName}-desc"
                             aria-selected="true">Description
                     </button>
                 </li>
