@@ -282,7 +282,12 @@ class ComposedCSSHelper extends CSSHelper {
         super({
             ...{
                 localDeployOnConstruct : options.deployOnConstruct || true,
-                selectorGenerator: (emoji, key, prefix, suffix) => `${prefix}.emojicomp_${key}${suffix}, ${prefix}[data-compose-key="${key}"]${suffix}`,
+                selectorGenerator: (emoji, key, prefix, suffix) => {
+                    if (emoji) {
+                        return `${prefix}[data-emojikey="${key}"]${suffix}`
+                    }
+                    return `${prefix}.emojicomp_${key}${suffix}, ${prefix}[data-compose-key="${key}"]${suffix}`
+                },
                 compositions: [],
                 positionSnap : 0
             }, ...options, ...{
